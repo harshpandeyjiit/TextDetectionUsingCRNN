@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="CRNN">
+  <meta name="author" content="Harsh/Akshat/Shashwat">
+  <title>Text Recognition in Natural Space using CRNN</title>
+  <link href="{{ url_for('static', filename = 'vendor/bootstrap/css/bootstrap.min.css')}}" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename = 'dist/style.css')}}">
+  <link href="{{ url_for('static', filename = 'css/scrolling-nav.css')}}" rel="stylesheet">
+  <link rel='stylesheet' href='https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css'>
+  <link rel='stylesheet' href='https://netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css'>
+</head>
+<style>
+body
+{
+    background:#1B2030 url(https://images.unsplash.com/photo-1489566072773-ddefc463a599?ixlib=rb-1.2.1&auto=format&fit=crop&w=1050&q=80) 50% 0 no-repeat;
+    background-size:100%;
+    background-attachment:fixed;
+}
+body::-webkit-scrollbar {
+    background-color:black;
+    width:16px
+}
+body::-webkit-scrollbar-track
+{
+    background-color:black;
+}
+
+body::-webkit-scrollbar-thumb
+{
+    background-color:darkblue;
+    border-radius:16px;
+    border:4px solid #transparent;
+}
+
+body::-webkit-scrollbar-button {display:none}
+.class1
+{
+    height: 100px;
+    padding-top: 50px;
+}
+.class2
+{
+    height: 300px;
+    padding-top: 10px;
+}
+
+.file-upload-btn2
+{
+  width: 100%;
+  margin: 0;
+  color: #fff;
+  background: #17a2b8;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  border-bottom: 4px solid #17a2b8;
+  transition: all .1s ease;
+  outline: none;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.file-upload-btn2:hover {
+  background: #17a2b8
+  color: #17a2b8;
+  transition: all .2s ease;
+  cursor: pointer;
+}
+.image-upload-wrap
+{
+  margin-top: 20px;
+  border: 4px solid #17a2b8;
+}
+.drag-text h3
+{
+  font-weight: 100;
+  text-transform: uppercase;
+  color: #17a2b8;
+  padding: 60px 0;
+}
+.image-upload-wrap:hover
+{
+  background-color: #ffffff;
+  border: 4px solid #00ff00;
+}
+.drag-text2
+{
+    font-weight: 100;
+    text-transform: uppercase;
+    color: #17a2b8;
+    padding: 60px 0;
+    text-align: center;
+}
+.twi
+{
+    text-align: center;
+}
+.result-text
+{
+    color: #17a2b8;
+    text-align: center;
+    background-color: transparent;
+}
+.gan
+{
+    text-align: center;
+}
+
+/* Style the navigation bar */
+.navbar {
+  margin-left: 5%;
+  width: 90%;
+  background-color: transparent;
+  overflow: auto;
+  border-radius: 25px;
+}
+h1
+{
+    color: white;
+}
+h2
+{
+    background: transparent;
+}
+
+.navbar a {
+  float: left;
+  text-align: center;
+  padding: 12px;
+  color: white;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.navbar a:hover
+{
+  border-radius: 20px;
+  border: 2px solid;
+}
+
+.active {
+  border-radius: 20px;
+  border: 2px solid;
+}
+
+.tab {
+       display:inline-block;
+       margin-left: 100px;
+       border-radius: 20px;
+       border: 2px solid green;
+       padding: 3px 3px;
+       padding-left: 3px;
+       padding-right: 3px;
+       margin-top: 10px;
+}
+@media screen and (max-width: 500px) {
+  .navbar a {
+    float: none;
+    display: block;
+  }
+}
+</style>
+
+<body>
+<div class="head-text-class">
+<h1><marquee behavior="Alternate">Text Recognition in Natural Space using CRNN</marquee></h1>
+<section id="services" >
+        <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    	<form action ="/predict" method = "post" enctype = "multipart/form-data">
+    	<div class="file-upload">
+            <button class="file-upload-btn2" type="button" onclick="$('.file-upload-input').trigger( 'click' )">Add Image from file</button>
+                <div class="image-upload-wrap">
+                    <input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" name="image" />
+                    <div class="drag-text2">
+                        <h3>Drag an image</h3>
+                    </div>
+                </div>
+                <div class="file-upload-content">
+                    <img class="file-upload-image" src="#" alt="your image"/>
+                    <div class="image-title-wrap">
+                        <button type="button" onclick="removeUpload()" class="remove-image">Remove<span class="image-title">Uploaded Image</span></button>
+                    </div>
+                </div>
+        </div>
+        <div class="twi"><br><br>
+            <button type="submit" class="btn btn-info btn-lg " value ="Predict">Click here to find TEXTS!</button>
+        </div><br><br><br>
+        <div class="result-text">
+            <h2>The Predicted Texts from the image provided are:<br></h2>
+        </div>
+        <header class="text-warning text-align:center class2">
+            <div class="text-white display: inline-block">
+                <h1>	{% if label %} {% for k,v in label.items(): %} <span class="tab">{{ v.upper() }} </span> {% endfor %} {% endif %} </h1>
+            </div>
+        </header>
+        </form>
+</div>
+  <script  src="{{ url_for('static', filename = 'src/script.js')}}"></script>
+  </section>
+  <script src="{{ url_for('static', filename = 'vendor/jquery/jquery.min.js')}} "></script>
+  <script src="{{ url_for('static', filename = 'vendor/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+  <script src="{{ url_for('static', filename = 'vendor/jquery-easing/jquery.easing.min.js')}}"></script>
+  <script src="{{ url_for('static', filename = 'js/scrolling-nav.js')}}"></script>
+</body>
+</html>
